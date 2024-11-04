@@ -14,27 +14,27 @@ For the analysis of this data set (Boar.csv), there are a few specific packages 
 
 ```{r Packages, include=FALSE}
 #Downloading Packages and Loading Libraries
-install.packages("dplyr")
-library(dplyr)
+#install.packages("dplyr")
+#library(dplyr)
 ```
 
 The first step is to read in the Boar data ("Boar.csv") which includes information based on their size (length) and TB status (tb). The goal of this analysis is to build a generalised linear model (GLM) to predict the possibility of a Boar being infected with TB based on their body length. 
 
-```{r}
+```{r loading_data}
 boar_data <- read.csv("Boar.csv", header = T, na = "NA", stringsAsFactors = T)
 
 ```
 
 Firstly, we want to look at some basic data exploration before we make our model. Here we plot all variable against each other and look at the structure of the data frame. 
 
-```{r}
-pairs(boar_data)
-glimpse(boar_data)
+```{r data_exploration}
+#pairs(boar_data)
+#glimpse(boar_data)
 ```
 
 Now that we understand our data format, we can start building our model. We identifiy the range of the data in length to apply to our model later. Finally we summarise our model afterwards to understand the statistical output. 
 
-```{r}
+```{r model_generation, align='c'}
 range(boar_data$length, na.rm = T) #Gives the range of the data input 
 
 model1 <- glm(Tb~length, data = boar_data, na.action = na.omit, family=binomial(link = "logit"))
@@ -47,5 +47,32 @@ plot(model1) #Plots the 4 residual plot.
 par(mfrow=c(1,1))
 
 summary(model1)
+```
+
+The final step is to build our prediction graphically. 
+
+```{r Graphical_representation}
+plot(Tb ~ length, data = boar_data)
+
+newDat <- expand.grid(length = seq(46.5,165,0.5))
+
+pred <- predict(model1, newdata = newDat, 
+                type = "response", se.fit = T, na.rm = T)
+#se.fit allows you to include the standard error within it
+#This expand must include all X variables we include in our model. The seq(min, max, stepwise_change/intervals)
+#Why do we have different types of 'type'?
+
+predFrame <- data.frame(pred, length = newDat$length) #Combinging the datasets
+head(predFrame)
+
+plot(Tb ~ length, data = boar_data) #Empty plot of just Tb and Length
+
+#Perfect Prediction line
+lines(fit ~ length, data = predFrame, lw = 1.5, col = "blue") #Adds the middle line
+
+#Predictions +/- the error. 
+lines(fit+se.fit ~ length, data = predFrame, lw = 1.5, col = "blue", lty = 2)
+lines(fit-se.fit ~ length, data = predFrame, lw = 1.5, col = "blue", lty = 2)
+
 ```
 
