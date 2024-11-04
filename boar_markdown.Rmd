@@ -1,30 +1,36 @@
 ---
-title: "boar-markdown"
+title: "Boar_Data_Markdown"
 author: "shelleydan"
 date: "2024-11-04"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+workDir <- "~/mydata/BIT107-Boar-Markdown/"
+projectName <- "Boar_Data_R_Markdown.R"
 ```
 
-## R Markdown
+For the analysis of this data set (Boar.csv), there are a few specific packages that need to be installed first. 
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r Packages, include=FALSE}
+#Downloading Packages and Loading Libraries
+install.packages("dplyr")
+library(dplyr)
 ```
 
-## Including Plots
+The first step is to read in the Boar data ("Boar.csv") which includes information based on their size (length) and TB status (tb). The goal of this analysis is to build a generalised linear model (GLM) to predict the possibility of a Boar being infected with TB based on their body length. 
 
-You can also embed plots, for example:
+```{r}
+boar_data <- read.csv("Boar.csv", header = T, na = "NA", stringsAsFactors = T)
 
-```{r pressure, echo=FALSE}
-plot(pressure)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Firstly, we want to look at some basic data exploration before we make our model. Here we plot all variable against each other and look at the structure of the data frame. 
+
+```{r}
+pairs(boar_data)
+glimpse(boar_data)
+```
+
+
+
