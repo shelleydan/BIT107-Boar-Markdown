@@ -32,5 +32,20 @@ pairs(boar_data)
 glimpse(boar_data)
 ```
 
+Now that we understand our data format, we can start building our model. We identifiy the range of the data in length to apply to our model later. Finally we summarise our model afterwards to understand the statistical output. 
 
+```{r}
+range(boar_data$length, na.rm = T) #Gives the range of the data input 
+
+model1 <- glm(Tb~length, data = boar_data, na.action = na.omit, family=binomial(link = "logit"))
+#We know to use binomial because the TB (y) only takes values of 0 or 1. 
+#logit is a value of the log of odds. 
+
+par(mfrow=c(2,2))
+plot(model1) #Plots the 4 residual plot. 
+#1: The top and bottom should not cross the middle line, this means that theres no false positive or false negative
+par(mfrow=c(1,1))
+
+summary(model1)
+```
 
